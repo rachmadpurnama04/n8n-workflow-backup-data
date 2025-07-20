@@ -1,0 +1,144 @@
+{
+  "active": false,
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-11T12:26:45.479Z",
+  "id": "nUP8AYZ4tQsQC16z",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "email",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        -20
+      ],
+      "id": "43d87e5d-7a9d-4b16-ac05-218299313b39",
+      "name": "Telegram Trigger",
+      "webhookId": "123dddd2-313b-41fa-a814-94092b27238c",
+      "credentials": {
+        "telegramApi": {
+          "id": "VWJIJEoV6vaHsDXr",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "You are a helpftugas anda:\n1. mengirimkan pesan dari telegram ke Gmail dengan format yang rapi dan jika ada tulisan yang kurang atau typo tolong di perbaiki sesuai kontek pembicaraan\n2. tolong kirimkan beberapa sepeti yang telah di perintahkan\n3. jika data tidak di temuka silahkan kirimkan pesan \"maaf data yang bapak/ibu minta tidak tersedia\"\nul assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -20
+      ],
+      "id": "efcef39f-3dda-4da9-b897-4bc66f0b98a8",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-05-20",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        180
+      ],
+      "id": "b6ea847f-b826-4072-ac8b-63aa165019d9",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FQ2rMnvoMHhihN3S",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        -20,
+        200
+      ],
+      "id": "2d7512ba-a625-4ac8-bb88-27e73fc8004c",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1eeG8ySgBW2nStks",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-11T13:43:13.000Z",
+  "versionId": "3519fce3-ceec-4008-b106-4737798a0c00"
+}
