@@ -1,0 +1,325 @@
+{
+  "active": false,
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Open",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_data_stok": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "close",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Open": {
+      "main": [
+        []
+      ]
+    },
+    "Memory Chat": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-09T10:20:56.614Z",
+  "id": "QdR0qZkK1Mq7vtht",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "telegram triger",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -20,
+        20
+      ],
+      "id": "e4478516-e0a3-4fc9-918a-c2217d291109",
+      "name": "Telegram Trigger",
+      "webhookId": "848cce67-08f3-4536-a606-7e8f592eac50",
+      "credentials": {
+        "telegramApi": {
+          "id": "TsMyfiV3zB62FZ3J",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "options": {
+          "systemMessage": "=bayangkan anda adalah seorang customer service bernama Putri yang ramah dan asik untuk di ajak berbicara, dan bekerja di toko kue KIA.\n\nalamat toko: Jl. A Yani, Pekanbaru.\n\nSosial Media: @Rad.purnama\n\nURL sosial media: https://komikcast.li/\n\nKontak WA: 085161078520.\n\nTugas anda:\n1. sapa customer dengan \"Hallo kak {{ $('Telegram Trigger').item.json.message.from.first_name }}, ada yang bisa saya bantu?\" hanya pada awal percakapan saja.\n2. menjawab pertanyaan umum tentang toko kue KIA seperti alamat, sosial media atau kontak WhatsApp.\n3. jika customer bertanya stok barang, maka jawab seputar stok barang ready atau kosong gunakan \"get_data_stok\" tool untuk mengecek stok.\n4. toko tutup pada pukul 22.00 Wib dab dibuka kembali pad pukul 08.00"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "eba14110-8185-4ad7-a086-07e3ae3202ae",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-05-20",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        480,
+        200
+      ],
+      "id": "684e2dbe-d184-4be1-bb43-b113a972a20a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FQ2rMnvoMHhihN3S",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1WCHk5I8Q4jSq9GSxtUDVtK_fekpOCIdbJIGw3fDgzS0",
+          "mode": "list",
+          "cachedResultName": "Untitled spreadsheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1WCHk5I8Q4jSq9GSxtUDVtK_fekpOCIdbJIGw3fDgzS0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1WCHk5I8Q4jSq9GSxtUDVtK_fekpOCIdbJIGw3fDgzS0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        800,
+        200
+      ],
+      "id": "1d145e24-3d7e-4969-a4cf-b4577ed105d2",
+      "name": "get_data_stok",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1eeG8ySgBW2nStks",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\n//sesuaikan dengan zona waktu di indonesia (WIB = UTC+7)\nconst hour = now.getUTCHours()+7;\n//karena defaul di n8n adalah UTC\n\n//ubah menjadi 0-24\nlet adjustedHourse = hour;\nif (adjustedHourse >= 24 ) adjustedHourse -= 24;\n\n//contoh toko dibuka mulai pukul 08.00 - 22:00 WIB\nconst isStoreClosed = adjustedHourse < 8 || adjustedHourse >= 22\nreturn[\n  {\n    JSON:{\n       isStoreClosed,\n    }\n  }\n]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        120,
+        20
+      ],
+      "id": "ce14849c-e830-425c-823c-817f772fb2ea",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b9ac3f42-cacb-4bc4-927e-eac29bbafbca",
+              "leftValue": "={{ $json.JSON.isStoreClosed }}",
+              "rightValue": "={{ $('Telegram Trigger').item.json.message.text }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "9c61fabc-5e0e-45ce-b5b5-ea1256d4dfe3",
+              "leftValue": "={{ $('Telegram Trigger').item.json.message.text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        20
+      ],
+      "id": "7295fc55-4012-44d6-b465-34a9d6ce89eb",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=toko sedang tutup",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        -160
+      ],
+      "id": "6e193217-ea31-4b57-8489-c78d570d4c7e",
+      "name": "close",
+      "webhookId": "764492e8-40d6-49fc-aee1-39638d4443a4",
+      "credentials": {
+        "telegramApi": {
+          "id": "TsMyfiV3zB62FZ3J",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        940,
+        0
+      ],
+      "id": "66165b80-6b9d-49ae-b79d-0e4edf755efe",
+      "name": "Open",
+      "webhookId": "764492e8-40d6-49fc-aee1-39638d4443a4",
+      "credentials": {
+        "telegramApi": {
+          "id": "TsMyfiV3zB62FZ3J",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        640,
+        200
+      ],
+      "id": "35d9d8db-985b-412a-8747-84e3aedfe423",
+      "name": "Memory Chat"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-07-15T13:47:29.000Z",
+  "versionId": "dc782ca0-3a13-4dd3-bcde-58addca03fca"
+}
