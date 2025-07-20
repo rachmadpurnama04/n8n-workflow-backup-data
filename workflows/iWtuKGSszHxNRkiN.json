@@ -1,0 +1,543 @@
+{
+  "active": false,
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "All data after Loop",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Delay",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Update data Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "All data after Loop": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delay": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update data Sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-13T04:02:53.061Z",
+  "id": "iWtuKGSszHxNRkiN",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "email triger",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        100,
+        0
+      ],
+      "id": "a1ebe2f2-b77c-4280-9c57-05cf6e88d9e4",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get templates from previous node\nconst templates = items.map(item => item.json);\n\n// Check if templates exist\nif (!templates || templates.length === 0) {\n  throw new Error('No templates found');\n}\n\n// Pick a random template\nconst index = Math.floor(Math.random() * templates.length);\nconst template = templates[index];\n\n// Convert body to HTML\nconst bodyHtml = template.Body.replace(/\\n/g, '<br>');\n\n// Return in n8n-compatible format\nreturn [\n  {\n    json: {\n      Subject: template.Subject,\n      Body: bodyHtml\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        -160
+      ],
+      "id": "95d28033-f1d8-4132-bde7-9622514c8851",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        640,
+        40
+      ],
+      "id": "afd13a43-ce7f-4e95-8496-9900ea2795a0",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ba656415-649b-4c99-99ea-8cb1ac0ac59d",
+              "name": "Body",
+              "value": "={{ $json.Body.replace(\"[Name]\", $json[\"Name\"] && $json[\"Name\"].trim() !== '' ? $json[\"Name\"].trim() : \"there\") }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        800,
+        40
+      ],
+      "id": "95cce38b-1c49-4931-ae28-f869b5475159",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "={{ $json.Subject }}",
+        "message": "={{ $json.Body }}",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "={{ $json.Name }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        40
+      ],
+      "id": "36deba9e-66ad-4ec6-ad9a-c34cedac3e22",
+      "name": "Send a message",
+      "webhookId": "d5e71497-1e75-448d-ad95-347cbc8be0b7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JepBLaFBCPz8GGDX",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -120,
+        260
+      ],
+      "id": "02527636-563d-4372-b3e0-5bec6388ca10",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -420,
+        20
+      ],
+      "id": "e8d4749b-9ec1-49a9-ae08-4a604e04f577",
+      "name": "Telegram Trigger",
+      "webhookId": "7ee6e494-70f5-4e2e-8702-afb90d478049",
+      "credentials": {
+        "telegramApi": {
+          "id": "VWJIJEoV6vaHsDXr",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9a75e0f2-faa4-4031-9e17-1cacd218b53a",
+              "leftValue": "={{ $json['Send status'] }}",
+              "rightValue": "SENT",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -100,
+        20
+      ],
+      "id": "e725d48d-c6c3-4370-bb70-8bf843d77e74",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1dYQX90VejOTmjhT9wQgN0KyS4x4gZTBpLn9ng7rQvZE",
+          "mode": "list",
+          "cachedResultName": "relation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dYQX90VejOTmjhT9wQgN0KyS4x4gZTBpLn9ng7rQvZE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dYQX90VejOTmjhT9wQgN0KyS4x4gZTBpLn9ng7rQvZE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        280,
+        -160
+      ],
+      "id": "ce800b38-f60c-4b5e-9a16-06d065077d7e",
+      "name": "All data after Loop",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1eeG8ySgBW2nStks",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        40
+      ],
+      "id": "d73244ec-e532-4a01-ad0d-c68d4a97e39a",
+      "name": "Delay",
+      "webhookId": "179619d1-356c-4f93-8c5e-ef45b8725375"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1dYQX90VejOTmjhT9wQgN0KyS4x4gZTBpLn9ng7rQvZE",
+          "mode": "list",
+          "cachedResultName": "relation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dYQX90VejOTmjhT9wQgN0KyS4x4gZTBpLn9ng7rQvZE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dYQX90VejOTmjhT9wQgN0KyS4x4gZTBpLn9ng7rQvZE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $json.Email }}",
+            "Send status": "={{ $json.labelIds[0] }}",
+            "Time": "={{ new Date().toLocaleTimeString(\"en-GB\", { timeZone: \"Asia/Jakarta\", hour12: false }) }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Subject",
+              "displayName": "Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Body",
+              "displayName": "Body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Send status",
+              "displayName": "Send status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        80,
+        260
+      ],
+      "id": "0a46d710-d360-4cc1-89ef-9faa8cb07596",
+      "name": "Update data Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1eeG8ySgBW2nStks",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1dYQX90VejOTmjhT9wQgN0KyS4x4gZTBpLn9ng7rQvZE",
+          "mode": "list",
+          "cachedResultName": "relation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dYQX90VejOTmjhT9wQgN0KyS4x4gZTBpLn9ng7rQvZE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dYQX90VejOTmjhT9wQgN0KyS4x4gZTBpLn9ng7rQvZE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -260,
+        20
+      ],
+      "id": "c58f7b35-7fb3-436c-a4f0-2a1018c30da5",
+      "name": "Get row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1eeG8ySgBW2nStks",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Email telah terkirim kepada {{ $json.Email }} dengan subject {{ $('Merge1').item.json.Subject }} pada pukul {{ $json.Time }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        260,
+        260
+      ],
+      "id": "a2dd69e4-1cb4-49d9-98e8-60be86acefa1",
+      "name": "Send a text message",
+      "webhookId": "e3297e85-3fd2-4fb0-8067-f928fc949855",
+      "credentials": {
+        "telegramApi": {
+          "id": "VWJIJEoV6vaHsDXr",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-07-13T09:33:52.000Z",
+  "versionId": "6d98c77b-9066-4a37-a8ae-016fc6597090"
+}
